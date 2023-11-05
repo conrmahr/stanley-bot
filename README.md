@@ -1,1 +1,3 @@
-# stanley-bot
+# Stanley Bot
+
+_Coming soon..._
