@@ -12,6 +12,7 @@ export default {
       subcommand
         .setName('now')
         .setDescription('Get latest scores')
+        .addBooleanOption((option) => option.setName('record').setDescription('Show team records'))
         .addBooleanOption((option) => option.setName('odds').setDescription('Show odds'))
         .addBooleanOption((option) => option.setName('broadcast').setDescription('Show TV listing'))
         .addBooleanOption((option) => option.setName('hide').setDescription('Hide scores'))
@@ -20,6 +21,7 @@ export default {
       subcommand
         .setName('tomorrow')
         .setDescription('Get tomorrow games')
+        .addBooleanOption((option) => option.setName('record').setDescription('Show team records'))
         .addBooleanOption((option) => option.setName('odds').setDescription('Show odds'))
         .addBooleanOption((option) => option.setName('broadcast').setDescription('Show TV listing'))
     )
@@ -27,7 +29,8 @@ export default {
       subcommand
         .setName('yesterday')
         .setDescription('Get yesterday scores')
-        .addBooleanOption((option) => option.setName('hide').setDescription('No spoilers'))
+        .addBooleanOption((option) => option.setName('record').setDescription('Show team records'))
+        .addBooleanOption((option) => option.setName('hide').setDescription('Hide scores'))
     )
     .addSubcommand((subcommand) =>
       subcommand
@@ -74,10 +77,11 @@ export default {
   },
   async execute(interaction: ChatInputCommandInteraction) {
     let data: any;
-    const inputTeam = interaction.options.getString('team') ?? null;
+    const inputTeamRecord = interaction.options.getBoolean('record') ?? null;
     const inputBroadcast = interaction.options.getBoolean('broadcast') ?? null;
     const inputOdds = interaction.options.getBoolean('odds') ?? null;
     const inputHide = interaction.options.getBoolean('hide') ?? null;
+    const inputTeam = interaction.options.getString('team') ?? null;
     const inputYYYYMMDD = interaction.options.getString('date') ?? null;
 
     if (interaction.options.getSubcommand() === 'tomorrow') {
@@ -100,13 +104,14 @@ export default {
         gameState: f.gameState,
         gameScheduleState: f.gameScheduleState,
         gameTimeLocal: formatGameTime(f.startTimeUTC),
+        teamRecords: inputTeamRecord,
         tvBroadcasts:
           f.tvBroadcasts.length && inputBroadcast ? `:tv: [${f.tvBroadcasts.map((b) => b.network).join(', ')}]` : null,
         noSpoilers: inputHide,
         awayTeamAbbrev: f.awayTeam.abbrev,
         homeTeamAbbrev: f.homeTeam.abbrev,
-        awayTeamRecord: !inputOdds && f.awayTeam.record ? f.awayTeam.record : null,
-        homeTeamRecord: !inputOdds && f.homeTeam.record ? f.homeTeam.record : null,
+        awayTeamRecord: f.awayTeam.record ? f.awayTeam.record : null,
+        homeTeamRecord: f.homeTeam.record ? f.homeTeam.record : null,
         awayTeamScore: f.awayTeam.score >= 0 ? `${f.awayTeam.score}` : null,
         homeTeamScore: f.homeTeam.score >= 0 ? `${f.homeTeam.score}` : null,
         awayTeamOdds:
@@ -117,7 +122,7 @@ export default {
                 .join('')}`
             : null,
         homeTeamOdds:
-          f.awayTeam?.odds && inputOdds
+          f.homeTeam?.odds && inputOdds
             ? `${f.homeTeam.odds
                 .filter((o) => o.providerId === 9) // US partnerId
                 .map((v) => v.value)

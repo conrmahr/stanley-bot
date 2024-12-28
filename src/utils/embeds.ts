@@ -20,8 +20,9 @@ export function formatGameLinescore(args: any) {
         gameState,
         gameScheduleState,
         gameTimeLocal,
-        noSpoilers,
+        teamRecords,
         tvBroadcasts,
+        noSpoilers,
         awayTeamAbbrev,
         homeTeamAbbrev,
         awayTeamRecord,
@@ -41,7 +42,7 @@ export function formatGameLinescore(args: any) {
 
       if (gameType) gameLineScoreArr.push(gameType);
       gameLineScoreArr.push(awayTeamAbbrev);
-      if (awayTeamRecord && (gameState === 'FUT' || gameState === 'PRE' || noSpoilers))
+      if (awayTeamRecord && (gameState === 'FUT' || gameState === 'PRE' || teamRecords || noSpoilers))
         gameLineScoreArr.push(`(${awayTeamRecord})`);
       if (awayTeamOdds && homeTeamOdds) gameLineScoreArr.push(`(${awayTeamOdds})`);
       if (awayTeamScore && !noSpoilers) {
