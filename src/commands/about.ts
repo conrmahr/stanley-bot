@@ -16,7 +16,7 @@ export default {
         iconURL: interaction.client.user.avatarURL() ?? undefined,
       })
       .setDescription(
-        `**${process.env.npm_package_name}** is developed by **[@conrmahr](https://github.com/conrmahr)** using the **[Discord.js](https://discord.js.org)** library.\nIssues and/or feature requests can be submitted through **[GitHub](https://github.com/conrmahr/stanley-bot)**.\n\n🤖 Stanley Bot v${process.env.npm_package_version}`
+        `**stanley-bot** is developed by **[@conrmahr](https://github.com/conrmahr)** using the **[Discord.js](https://discord.js.org)** library.\nIssues and/or feature requests can be submitted through **[GitHub](https://github.com/conrmahr/stanley-bot/issues)**.\n\n🤖 Stanley Bot v0.2.0`
       );
 
     const supportButton = new ButtonBuilder()
