@@ -23,7 +23,7 @@ export default {
         },
         {
           name: 'Contribute',
-          value: '[Contribute to stanley-bot on GitHub](https://git.io/stanley-bot)',
+          value: '[Contribute to stanley-bot on GitHub](https://github.com/conrmahr/stanley-bot)',
         },
         {
           name: 'Sponsor',
@@ -31,6 +31,6 @@ export default {
         }
       );
 
-    interaction.reply({ embeds: [embed], ephemeral: false });
+    interaction.reply({ embeds: [embed], ephemeral: true });
   },
 };

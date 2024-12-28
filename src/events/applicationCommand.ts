@@ -2,25 +2,33 @@ import { BaseInteraction, Events, InteractionType } from 'discord.js';
 import { Client } from '../types';
 
 export default {
-	event: Events.InteractionCreate,
-	once: false,
-	async execute(interaction: BaseInteraction) {
-		if(!interaction.isChatInputCommand()) return;
-	
-		const client: Client = interaction.client;
+  event: Events.InteractionCreate,
+  once: false,
+  async execute(interaction: BaseInteraction) {
+    if (!interaction.isChatInputCommand()) return;
 
-		const command = client.commands!.get(interaction.commandName);
+    const client: Client = interaction.client;
 
-		if (!command) {
-			console.error(`No command matching ${interaction.commandName} was found.`);
-			return;
-		}
+    const command = client.commands!.get(interaction.commandName);
 
-		try {
-			await command.execute(interaction);
-		} catch (error) {
-			console.error(error);
-			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-		}
-	},
+    if (!command) {
+      console.error(`No command matching ${interaction.commandName} was found.`);
+      return;
+    }
+
+    const commandActivity = {
+      server: interaction.guild?.name,
+      serverId: interaction.guild?.id,
+      count: interaction.guild?.memberCount,
+      command: `${interaction.commandName} ${interaction.options.getSubcommand(false)}`,
+    };
+
+    try {
+      if (process.env.DEBUG) console.log(commandActivity);
+      await command.execute(interaction);
+    } catch (error) {
+      console.error(error);
+      await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+    }
+  },
 };

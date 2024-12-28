@@ -1,25 +1,27 @@
 import { getQueryExpression } from '../utils/helpers.js';
 import {
   SeasonsOptions,
-  GameBoxscoreOptions,
+  GameLinescoreOptions,
+  GameBoxScoreOptions,
   TeamStatsOptions,
   TeamRosterOptions,
   ScheduleOptions,
   ScheduleByTeamOptions,
+  Linescore,
 } from '../types';
 
 export const getSeasonCurrent = async () => {
   try {
-    const response = await fetch(`https://api.nhle.com/stats/rest/en/componentSeason`);
+    const response = await fetch(`https://api-web.nhle.com/v1/season`);
 
     if (!response.ok) {
       console.error(`Failed to fetch current season: ${response.status}`);
       return;
     }
 
-    const { data } = await response.json();
+    const data: any = await response.json();
 
-    return data;
+    return data.pop();
   } catch (error) {
     console.error('Failed to fetch current season');
     return error;
@@ -39,7 +41,7 @@ export const getSeasons = async (args: SeasonsOptions) => {
       return;
     }
 
-    const { data } = await response.json();
+    const data: any = await response.json();
 
     return data;
   } catch (error) {
@@ -50,14 +52,14 @@ export const getSeasons = async (args: SeasonsOptions) => {
 
 export const getTeamsList = async () => {
   try {
-    const response = await fetch(`https://api.nhle.com/stats/rest/en/team`);
+    const response = await fetch(`https://api-web.nhle.com/v1/schedule-calendar/now`);
 
     if (!response.ok) {
       console.error(`Failed to fetch teams list: ${response.status}`);
       return;
     }
 
-    const { data } = await response.json();
+    const data: any = await response.json();
 
     return data;
   } catch (error) {
@@ -75,7 +77,7 @@ export const getSeasonsList = async () => {
       return;
     }
 
-    const seasons = await response.json();
+    const { seasons }: any = await response.json();
 
     return seasons;
   } catch (error) {
@@ -93,7 +95,7 @@ export const getDraftList = async () => {
       return;
     }
 
-    const { data } = await response.json();
+    const data: any = await response.json();
 
     return data;
   } catch (error) {
@@ -102,7 +104,7 @@ export const getDraftList = async () => {
   }
 };
 
-export const getGameBoxscore = async (args: GameBoxscoreOptions) => {
+export const getGameBoxScore = async (args: GameBoxScoreOptions) => {
   try {
     const gameId = args.id;
 
@@ -113,11 +115,30 @@ export const getGameBoxscore = async (args: GameBoxscoreOptions) => {
       return;
     }
 
-    const data = await response.json();
+    const data: any = await response.json();
 
     return data;
   } catch (error) {
     console.error('Failed to fetch game boxscore');
+    return error;
+  }
+};
+
+export const getGameLinescore = async (args: GameLinescoreOptions) => {
+  try {
+    const date = args.date ? args.date : 'now';
+    const response = await fetch(`https://api-web.nhle.com/v1/score/${date}`);
+
+    if (!response.ok) {
+      console.error(`Failed to fetch game linescore: ${response.status}`);
+      return;
+    }
+
+    const result: Linescore = await response.json();
+
+    return result;
+  } catch (error) {
+    console.error('Failed to fetch game linescore');
     return error;
   }
 };
@@ -135,7 +156,7 @@ export const getTeamStats = async (args: TeamStatsOptions) => {
       return;
     }
 
-    const { data } = await response.json();
+    const data: any = await response.json();
 
     return data;
   } catch (error) {
@@ -147,15 +168,15 @@ export const getTeamStats = async (args: TeamStatsOptions) => {
 export const getTeamByRoster = async (args: TeamRosterOptions) => {
   try {
     const seasonId = args.seasonId;
-    const triCode = args.triCode;
+    const abbrev = args.abbrev;
 
-    const response = await fetch(`https://api-web.nhle.com/v1/roster/${triCode}/${seasonId}`);
+    const response = await fetch(`https://api-web.nhle.com/v1/roster/${abbrev}/${seasonId}`);
 
     if (!response.ok) {
       console.error(`Failed to fetch team roster: ${response.status}`);
       return;
     }
-    const data = await response.json();
+    const data: any = await response.json();
 
     return data;
   } catch (error) {
@@ -174,7 +195,7 @@ export const getSchedule = async (args: ScheduleOptions) => {
       return;
     }
 
-    const data = await response.json();
+    const data: any = await response.json();
 
     return data;
   } catch (error) {
@@ -185,16 +206,15 @@ export const getSchedule = async (args: ScheduleOptions) => {
 
 export const getScheduleByTeam = async (args: ScheduleByTeamOptions) => {
   try {
-    const triCode = args.triCode;
-    const date = args.date ? args.date : 'now';
-    const response = await fetch(`https://api-web.nhle.com/v1/club-schedule/${triCode}/week/${date}`);
+    const abbrev = args.abbrev;
+    const response = await fetch(`https://api-web.nhle.com/v1/club-schedule/${abbrev}/week/now`);
 
     if (!response.ok) {
       console.error(`Failed to fetch schedule: ${response.status}`);
       return;
     }
 
-    const data = await response.json();
+    const data: any = await response.json();
 
     return data;
   } catch (error) {

@@ -15,7 +15,7 @@ export const getDraft = async (args: DraftOptions) => {
       return;
     }
 
-    const { data } = await response.json();
+    const { data }: any = await response.json();
 
     return data;
   } catch (error) {
@@ -37,7 +37,7 @@ export const getOfficials = async (args: OfficialOptions) => {
       return;
     }
 
-    const { data } = await response.json();
+    const { data }: any = await response.json();
 
     return data;
   } catch (error) {

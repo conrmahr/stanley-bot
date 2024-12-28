@@ -13,10 +13,10 @@ export default {
     const embed = getDefaultEmbed()
       .setAuthor({
         name: 'About',
-        iconURL: 'https://cdn.discordapp.com/avatars/535203406592344067/1473d566732ea6ffd24d02be45af8b21.png',
+        iconURL: interaction.client.user.avatarURL() ?? undefined,
       })
       .setDescription(
-        `**Stanley Bot** is developed by **[@conrmahr](https://github.com/conrmahr)** using the **[Discord.js](https://discord.js.org)** library.\nIssues and/or feature requests can be submitted through **[GitHub](https://github.com/conrmahr/stanley-bot)**.\n\n🤖 Stanley Bot v${process.env.STANLEY_VERSION}`
+        `**${process.env.npm_package_name}** is developed by **[@conrmahr](https://github.com/conrmahr)** using the **[Discord.js](https://discord.js.org)** library.\nIssues and/or feature requests can be submitted through **[GitHub](https://github.com/conrmahr/stanley-bot)**.\n\n🤖 Stanley Bot v${process.env.npm_package_version}`
       );
 
     const supportButton = new ButtonBuilder()
@@ -24,7 +24,12 @@ export default {
       .setURL('https://github.com/sponsors/conrmahr')
       .setStyle(ButtonStyle.Link);
 
-    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(supportButton);
-    interaction.reply({ components: [row], embeds: [embed], ephemeral: false });
+    const sponsorButton = new ButtonBuilder()
+      .setLabel('Support')
+      .setURL('https://bot.hockey/invite')
+      .setStyle(ButtonStyle.Link);
+
+    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(sponsorButton, supportButton);
+    interaction.reply({ components: [row], embeds: [embed], ephemeral: true });
   },
 };

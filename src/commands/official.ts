@@ -1,8 +1,8 @@
 import { SlashCommandBuilder, EmbedBuilder, ChatInputCommandInteraction, AutocompleteInteraction } from 'discord.js';
 import { getDefaultEmbed } from '../utils/embeds.js';
-import { getGameBoxscore } from '../api/nhle.js';
+import { getGameBoxScore } from '../api/nhle.js';
 import { getOfficials } from '../api/records.js';
-import { sliceLimit, formatGameDate } from '../utils/helpers.js';
+import { sliceLimit, formatGameDate, formatFlag } from '../utils/helpers.js';
 
 export default {
   data: new SlashCommandBuilder()
@@ -36,11 +36,16 @@ export default {
   async execute(interaction: ChatInputCommandInteraction) {
     const inputId = interaction.options.getString('name') ?? undefined;
     const data = await getOfficials({ id: inputId });
-    const [bio] = data.length ? data : ['No officials results'];
+    const [bio] = data.length ? data : ['No officials found'];
 
-    const firstRegularGameDate = await getGameBoxscore({ id: bio.firstRegularGameId });
+    async function getGameDate(gameId: string | undefined): Promise<string> {
+      if (!gameId) return '--';
+      const gameBoxScore = await getGameBoxScore({ id: gameId });
+      return gameBoxScore.gameDate;
+    }
 
-    const firstPlayoffGameDate = await getGameBoxscore({ id: bio.firstPlayoffGameId });
+    const firstRegularGameDate = await getGameDate(bio.firstRegularGameId);
+    const firstPlayoffGameDate = await getGameDate(bio.firstPlayoffGameId);
 
     const embed = getDefaultEmbed()
       .setAuthor({
@@ -49,10 +54,12 @@ export default {
         iconURL: 'https://i.imgur.com/zl8JzZc.png',
       })
       .setThumbnail(bio.thumb_url)
-      .setDescription(`${bio.officialType} | ${bio.birthCity}, ${bio.stateProvinceCode}, ${bio.nationalityCode}`)
+      .setDescription(
+        `${bio.officialType} | ${bio.birthCity}, ${bio.stateProvinceCode} ${formatFlag(bio.nationalityCode)}`
+      )
       .addFields(
-        { name: 'First Regular Game', value: formatGameDate(firstRegularGameDate.gameDate), inline: true },
-        { name: 'First Playoff Game', value: formatGameDate(firstPlayoffGameDate.gameDate), inline: true }
+        { name: 'First Regular Game', value: firstRegularGameDate, inline: true },
+        { name: 'First Playoff Game', value: firstPlayoffGameDate, inline: true }
       );
     const embeds: EmbedBuilder[] = [];
     embeds.push(embed);
