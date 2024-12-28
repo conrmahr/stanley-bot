@@ -29,7 +29,6 @@ export default {
       subcommand
         .setName('yesterday')
         .setDescription('Get yesterday scores')
-        .addBooleanOption((option) => option.setName('record').setDescription('Show team records'))
         .addBooleanOption((option) => option.setName('hide').setDescription('Hide scores'))
     )
     .addSubcommand((subcommand) =>

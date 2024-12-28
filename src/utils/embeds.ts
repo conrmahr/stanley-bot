@@ -42,9 +42,9 @@ export function formatGameLinescore(args: any) {
 
       if (gameType) gameLineScoreArr.push(gameType);
       gameLineScoreArr.push(awayTeamAbbrev);
-      if (awayTeamRecord && (gameState === 'FUT' || gameState === 'PRE' || teamRecords || noSpoilers))
+      if (awayTeamRecord && teamRecords && !noSpoilers && (gameState === 'FUT' || gameState === 'PRE'))
         gameLineScoreArr.push(`(${awayTeamRecord})`);
-      if (awayTeamOdds && homeTeamOdds) gameLineScoreArr.push(`(${awayTeamOdds})`);
+      if (awayTeamOdds && homeTeamOdds && !noSpoilers) gameLineScoreArr.push(`(${awayTeamOdds})`);
       if (awayTeamScore && !noSpoilers) {
         let awayGoals = awayTeamScore;
         if ((gameState === 'FINAL' || gameState === 'OFF') && awayTeamScore > homeTeamScore)
@@ -54,9 +54,9 @@ export function formatGameLinescore(args: any) {
       if (awayTeamSituations && !noSpoilers) gameLineScoreArr.push(awayTeamSituations);
       if (gameState === 'FUT' || gameState === 'PRE' || noSpoilers) gameLineScoreArr.push('@');
       gameLineScoreArr.push(homeTeamAbbrev);
-      if (homeTeamRecord && (gameState === 'FUT' || gameState === 'PRE' || noSpoilers))
+      if (homeTeamRecord && teamRecords && !noSpoilers && (gameState === 'FUT' || gameState === 'PRE'))
         gameLineScoreArr.push(`(${homeTeamRecord})`);
-      if (awayTeamOdds && homeTeamOdds) gameLineScoreArr.push(`(${homeTeamOdds})`);
+      if (awayTeamOdds && homeTeamOdds && !noSpoilers) gameLineScoreArr.push(`(${homeTeamOdds})`);
       if (homeTeamScore && !noSpoilers) {
         let homeGoals = homeTeamScore;
         if ((gameState === 'FINAL' || gameState === 'OFF') && homeTeamScore > awayTeamScore)
