@@ -20,7 +20,7 @@ export default {
       server: interaction.guild?.name,
       serverId: interaction.guild?.id,
       count: interaction.guild?.memberCount,
-      command: `${interaction.commandName} ${interaction.options.getSubcommand(false)}`,
+      command: `${interaction ?? ''}`,
     };
 
     try {

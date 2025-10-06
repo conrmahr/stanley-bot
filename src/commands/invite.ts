@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, MessageFlags } from 'discord.js';
 import { getDefaultEmbed } from '../utils/embeds.js';
 
 export default {
@@ -15,7 +15,7 @@ export default {
       .addFields(
         {
           name: 'Add to Server',
-          value: '[Invite staleny-bot to Your Server](https://bot.hockey/invite)',
+          value: '[Invite stanley-bot to Your Server](https://bot.hockey/invite)',
         },
         {
           name: 'Join',
@@ -31,6 +31,6 @@ export default {
         }
       );
 
-    interaction.reply({ embeds: [embed], ephemeral: true });
+    interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
   },
 };

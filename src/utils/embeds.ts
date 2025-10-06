@@ -63,7 +63,7 @@ export function formatGameLinescore(args: any) {
           homeGoals = `**${homeGoals}**`;
         gameLineScoreArr.push(homeGoals);
       }
-      if (homeTeamSituations || !noSpoilers) gameLineScoreArr.push(homeTeamSituations);
+      if (homeTeamSituations && !noSpoilers) gameLineScoreArr.push(homeTeamSituations);
       if (gameScheduleState === 'OK' && (gameState === 'FUT' || gameState === 'PRE' || noSpoilers)) {
         gameLineScoreArr.push(gameTimeLocal);
       } else if (gameState === 'FUT' || gameScheduleState === 'PPD') {

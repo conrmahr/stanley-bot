@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, EmbedBuilder, ChatInputCommandInteraction, AutocompleteInteraction } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder, ChatInputCommandInteraction, AutocompleteInteraction, MessageFlags } from 'discord.js';
 import { getDefaultEmbed } from '../utils/embeds.js';
 import { getGameBoxScore } from '../api/nhle.js';
 import { getOfficials } from '../api/records.js';
@@ -13,6 +13,12 @@ export default {
     let choices: { name: string; value: string }[] = [];
     const focusedOption: { name: string; value: string } = interaction.options.getFocused(true);
     const officials = await getOfficials({ active: true });
+
+    // Guard against API failure
+    if (!officials || officials.length === 0) {
+      await interaction.respond([]);
+      return;
+    }
 
     const officialsFocused: string[] = officials
       .filter(
@@ -36,12 +42,23 @@ export default {
   async execute(interaction: ChatInputCommandInteraction) {
     const inputId = interaction.options.getString('name') ?? undefined;
     const data = await getOfficials({ id: inputId });
-    const [bio] = data.length ? data : ['No officials found'];
+
+    if (!data || data.length === 0) {
+      await interaction.reply({ content: 'No official found with that name or ID.', flags: MessageFlags.Ephemeral });
+      return;
+    }
+
+    const [bio] = data;
 
     async function getGameDate(gameId: string | undefined): Promise<string> {
       if (!gameId) return '--';
-      const gameBoxScore = await getGameBoxScore({ id: gameId });
-      return gameBoxScore.gameDate;
+      try {
+        const gameBoxScore = await getGameBoxScore({ id: gameId });
+        return gameBoxScore?.gameDate ? formatGameDate(gameBoxScore.gameDate) : '--';
+      } catch (error) {
+        console.error(`Failed to fetch game date for game ${gameId}:`, error);
+        return '--';
+      }
     }
 
     const firstRegularGameDate = await getGameDate(bio.firstRegularGameId);

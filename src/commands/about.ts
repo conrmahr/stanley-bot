@@ -4,6 +4,7 @@ import {
   ButtonStyle,
   SlashCommandBuilder,
   ChatInputCommandInteraction,
+  MessageFlags,
 } from 'discord.js';
 import { getDefaultEmbed } from '../utils/embeds.js';
 
@@ -19,17 +20,17 @@ export default {
         `**stanley-bot** is developed by **[@conrmahr](https://github.com/conrmahr)** using the **[Discord.js](https://discord.js.org)** library.\nIssues and/or feature requests can be submitted through **[GitHub](https://github.com/conrmahr/stanley-bot/issues)**.\n\n🤖 Stanley Bot v0.3.1`
       );
 
-    const supportButton = new ButtonBuilder()
+    const sponsorButton = new ButtonBuilder()
       .setLabel('Sponsor')
       .setURL('https://github.com/sponsors/conrmahr')
       .setStyle(ButtonStyle.Link);
 
-    const sponsorButton = new ButtonBuilder()
+    const supportButton = new ButtonBuilder()
       .setLabel('Support')
       .setURL('https://bot.hockey/invite')
       .setStyle(ButtonStyle.Link);
 
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(sponsorButton, supportButton);
-    interaction.reply({ components: [row], embeds: [embed], ephemeral: true });
+    interaction.reply({ components: [row], embeds: [embed], flags: MessageFlags.Ephemeral });
   },
 };

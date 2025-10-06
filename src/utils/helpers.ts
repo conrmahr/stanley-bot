@@ -36,7 +36,7 @@ export function random(arr: any[]) {
 
 export function sliceLimit(obj: any[]) {
   if (obj.length <= 25) return obj;
-  return obj.slice(0, 25 - obj.length);
+  return obj.slice(0, 25);
 }
 
 export function getQueryExpression(arr: string[] = []) {
