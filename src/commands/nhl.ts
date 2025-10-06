@@ -1,4 +1,10 @@
-import { SlashCommandBuilder, EmbedBuilder, ChatInputCommandInteraction, AutocompleteInteraction } from 'discord.js';
+import {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  ChatInputCommandInteraction,
+  AutocompleteInteraction,
+  MessageFlags,
+} from 'discord.js';
 import { getDefaultEmbed, formatGameLinescore } from '../utils/embeds.js';
 import { getTeamsList, getScheduleByTeam, getGameLinescore } from '../api/nhle.js';
 import { sliceLimit, formatDate, formatGameDate, formatGameTime } from '../utils/helpers.js';
@@ -56,6 +62,12 @@ export default {
     if (focusedOption.name === 'team') {
       const { teams } = await getTeamsList();
 
+      // Guard against API failure
+      if (!teams || teams.length === 0) {
+        await interaction.respond([]);
+        return;
+      }
+
       const teamFocused: string[] = teams
         .filter(
           (team: { name: { default: string }; abbrev: string }) =>
@@ -93,6 +105,11 @@ export default {
       data = await getScheduleByTeam({ abbrev: inputTeam });
     } else {
       data = await getGameLinescore({ date: formatDate({}) });
+    }
+
+    if (!data || data.length === 0) {
+      await interaction.reply({ content: 'No games found with that name or date.', flags: MessageFlags.Ephemeral });
+      return;
     }
 
     const prepGames = data.games.map((f: Game) => {
