@@ -1,4 +1,4 @@
-import { BaseInteraction, Events, InteractionType } from 'discord.js';
+import { BaseInteraction, Events, MessageFlags } from 'discord.js';
 import { Client } from '../types';
 
 export default {
@@ -28,7 +28,7 @@ export default {
       await command.execute(interaction);
     } catch (error) {
       console.error(error);
-      await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+      await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
     }
   },
 };
