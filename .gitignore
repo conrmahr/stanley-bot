@@ -80,7 +80,7 @@ web_modules/
 .env.local
 
 # Claude Code personalization file
-CLAUDE.me
+CLAUDE.md
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
