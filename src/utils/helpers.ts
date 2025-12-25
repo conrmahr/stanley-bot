@@ -8,12 +8,16 @@ dayjs.extend(timezone);
 dayjs.extend(weekday);
 dayjs.extend(advanceFormat);
 
+function getTimezone() {
+  return process.env.TIME_ZONE || 'America/New_York';
+}
+
 export function setCurrentTime(str?: string) {
-  const currentTime = dayjs(str).tz(process.env.TIME_ZONE);
+  const currentTime = dayjs(str).tz(getTimezone());
   return currentTime;
 }
 export function formatDate(obj: { date?: string; day?: number }) {
-  const isSetDate = obj.date ?? dayjs().subtract(12, 'hour').tz(process.env.TIME_ZONE); // Today changes at 12pm EST
+  const isSetDate = obj.date ?? dayjs().subtract(12, 'hour').tz(getTimezone()); // Today changes at 12pm EST
   const isOffDay = obj.day ?? 0;
   return dayjs(isSetDate).add(isOffDay, 'day').format('YYYY-MM-DD');
 }
